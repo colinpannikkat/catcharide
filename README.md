@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# CatchARide: Share your ride, split the cost, and make a new friend on the way
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
