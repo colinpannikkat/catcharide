@@ -48,6 +48,14 @@ class IDVerification:
         Raises:
             ValueError: If the Base64-encoded string exceeds the allowed size limit (4MB).
         """
+        # Check if the input is already a Base64-encoded string
+        try:
+            if base64.b64encode(base64.b64decode(image_path)).decode('utf-8') == image_path:
+                self.check_base64_size(image_path)
+                return image_path
+        except Exception:
+            pass  # Not a valid Base64 string, proceed with encoding
+
         with open(image_path, "rb") as image_file:
             encoded = base64.b64encode(image_file.read()).decode('utf-8')
             self.check_base64_size(encoded)
@@ -63,7 +71,7 @@ class IDVerification:
         responds with a JSON object containing the extracted fields.
 
         Args:
-            img_ref (str): A reference to the image (file path or URL) to be parsed.
+            img_ref (str): A b64 encoding of the image to be parsed.
 
         Returns:
             dict or None: A dictionary containing the extracted fields:
@@ -119,7 +127,7 @@ class IDVerification:
         Verifies the identity of a person by comparing their provided first and last names
         with the names extracted from an identification document image.
         Args:
-            img_ref (str): The file path or reference to the image of the identification document.
+            img_ref (str): The b64 enccoding of the image of the identification document.
             first_name (str): The first name of the person to verify.
             last_name (str): The last name of the person to verify.
         Returns:
@@ -138,8 +146,6 @@ class IDVerification:
         second_fuzz = fuzz.partial_ratio(last_name, id['last_name'])
         total_fuzz = (first_fuzz + second_fuzz) / 200
 
-        print(total_fuzz)
-
         # Add verified category
         id['verified'] = True if total_fuzz > 0.90 else False
         return id
@@ -149,17 +155,32 @@ class IDVerification:
         Verifies if two images represent the same face using DeepFace.
 
         Args:
-            img_ref (str): The file path to the reference image.
-            face_ref (str): The file path to the face image to be verified.
+            img_ref (str): The b64 encoding to the reference image.
+            face_ref (str): The b64 encoding to the face image to be verified.
 
         Returns:
             dict: A dictionary containing the verification result, including 
                   similarity metrics and a boolean indicating if the faces match.
         """
+        # Decode the Base64-encoded images to temporary files for DeepFace compatibility
+        img_ref_path = "/tmp/img_ref.jpg"
+        face_ref_path = "/tmp/face_ref.jpg"
+
+        with open(img_ref_path, "wb") as img_file:
+            img_file.write(base64.b64decode(img_ref))
+
+        with open(face_ref_path, "wb") as face_file:
+            face_file.write(base64.b64decode(face_ref))
+
         result = DeepFace.verify(
-            img1_path = img_ref,
-            img2_path = face_ref,
+            img1_path = img_ref_path,
+            img2_path = face_ref_path,
         )
+
+        # Clean up temporary files
+        os.remove(img_ref_path)
+        os.remove(face_ref_path)
+
         return result
 
     def verify(self, img_ref, face_ref, first_name, last_name) -> dict | None:

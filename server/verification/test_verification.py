@@ -6,8 +6,8 @@ def id_verification():
     return IDVerification()
 
 def test_verify_ajinkya(id_verification):
-    img_ref = "server/verification/testing/ajay2.jpeg"
-    face_ref = "server/verification/testing/ajay1.jpeg"
+    img_ref = id_verification.encode_image("server/verification/testing/ajay2.jpeg")
+    face_ref = id_verification.encode_image("server/verification/testing/ajay1.jpeg")
     first_name = "Ajinkya"
     last_name = "Gokule"
     
@@ -17,8 +17,8 @@ def test_verify_ajinkya(id_verification):
     assert result['face_res']['verified'] is True
 
 def test_verify_colin(id_verification):
-    img_ref = "server/verification/testing/colin2.jpeg"
-    face_ref = "server/verification/testing/colin1.jpeg"
+    img_ref = id_verification.encode_image("server/verification/testing/colin2.jpeg")
+    face_ref = id_verification.encode_image("server/verification/testing/colin1.jpeg")
     first_name = "Colin"
     last_name = "Pannikkat"
     
@@ -28,8 +28,8 @@ def test_verify_colin(id_verification):
     assert result['face_res']['verified'] is True
 
 def test_verify_david(id_verification):
-    img_ref = "server/verification/testing/david2.jpeg"
-    face_ref = "server/verification/testing/david1.jpeg"
+    img_ref = id_verification.encode_image("server/verification/testing/david2.jpeg")
+    face_ref = id_verification.encode_image("server/verification/testing/david1.jpeg")
     first_name = "David"
     last_name = "Gesl"
     
@@ -40,8 +40,8 @@ def test_verify_david(id_verification):
     assert result['face_res']['verified'] is True
 
 def test_verify_invalid(id_verification):
-    img_ref = "server/verification/testing/napkin.jpeg"
-    face_ref = "server/verification/testing/ajay1.jpeg"
+    img_ref = id_verification.encode_image("server/verification/testing/napkin.jpeg")
+    face_ref = id_verification.encode_image("server/verification/testing/ajay1.jpeg")
     first_name = "Invalid"
     last_name = "Person"
     
