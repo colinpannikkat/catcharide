@@ -3,6 +3,28 @@ import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 
+async function checkUser(token) {
+    // Send token to your Flask backend for verification and user check.
+    const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        },
+        body: JSON.stringify({ token }),
+    });
+
+    // Store the token in local storage
+    localStorage.setItem('authToken', token);
+    
+    console.log('Token:', token);
+    console.log('Response json: ', response.json);
+    console.log('Response body: ', response.body);
+
+    return body.json()
+}
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -11,24 +33,7 @@ const Login = () => {
     let token = credentialResponse.credential;
 
     try {
-        // Send token to your Flask backend for verification and user check.
-        const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-            
-                'Content-Type': 'application/json'
-           ,
-            'Accept': 'application/json'
-          },
-            body: JSON.stringify({ token }),
-        });
-        
-        console.log('Token:', token);
-        console.log('Response json: ', response.json);
-        console.log('Response body: ', response.body);
-
-        const data = await response.json();
+        const data = await checkUser(token);
         console.log('Backend response:', data);
         
         // Redirect based on the backend response.
