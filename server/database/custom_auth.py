@@ -4,7 +4,7 @@ import google.oauth2.id_token
 import google.auth.transport.requests
 
 # Import DatabaseDriver, connection_params, and User from driver.py
-from driver import DatabaseDriver, connection_params, User
+from database.driver import DatabaseDriver, connection_params, User
 
 # Create an instance of DatabaseDriver using your connection parameters.
 db = DatabaseDriver(connection_params)
