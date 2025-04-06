@@ -1,0 +1,217 @@
+{% extends "layout.html" %}
+
+{% block title %}Ride Requests - CatchARide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Ride Requests</h2>
+            <p class="text-muted">
+                For ride from <strong>{{ ride_offer.origin }}</strong> to <strong>{{ ride_offer.destination }}</strong>
+                on <strong class="format-date">{{ ride_offer.departure_time }}</strong>
+            </p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('drivers.my_offers') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left me-2"></i> Back to My Offers
+            </a>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h4 class="mb-0">Ride Details</h4>
+                </div>
+                <div class="col-auto">
+                    {% if ride_offer.available_seats > 0 %}
+                        <span class="badge bg-success">{{ ride_offer.available_seats }} seats available</span>
+                    {% else %}
+                        <span class="badge bg-danger">Full</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p><strong>Departure Time:</strong> <span class="format-datetime">{{ ride_offer.departure_time }}</span></p>
+                    <p><strong>Origin:</strong> {{ ride_offer.origin }}</p>
+                    <p><strong>Destination:</strong> {{ ride_offer.destination }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Description:</strong> {{ ride_offer.description or "No description provided" }}</p>
+                    {% set confirmed_requests = ride_matches|selectattr('confirmed', 'eq', true)|list %}
+                    <p><strong>Confirmed Passengers:</strong> {{ confirmed_requests|length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mb-3">Passenger Requests</h3>
+
+    {% set pending_requests = ride_matches|selectattr('pending', 'eq', true)|list %}
+    {% set confirmed_requests = ride_matches|selectattr('confirmed', 'eq', true)|list %}
+    {% set declined_requests = ride_matches|selectattr('pending', 'eq', false)|selectattr('confirmed', 'eq', false)|list %}
+
+    <!-- Pending Requests -->
+    {% if pending_requests %}
+        <div class="card mb-4">
+            <div class="card-header bg-warning text-white">
+                <h4 class="mb-0">Pending Requests ({{ pending_requests|length }})</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for match in pending_requests %}
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-user text-secondary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-0">{{ match.ride_request.rider.full_name }}</h5>
+                                            <small class="text-muted">Requested on <span class="format-date">{{ match.created_at }}</span></small>
+                                            <div class="mt-2">
+                                                <small class="text-muted">From: {{ match.ride_request.origin }}</small><br>
+                                                <small class="text-muted">To: {{ match.ride_request.destination }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <div class="btn-group" role="group">
+                                        {% if ride_offer.available_seats > 0 %}
+                                            <form action="{{ url_for('drivers.accept_request', match_id=match.id) }}" method="POST">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-success me-2">
+                                                    <i class="fas fa-check me-1"></i> Accept
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <button type="button" class="btn btn-success me-2" disabled>
+                                                <i class="fas fa-check me-1"></i> Accept
+                                            </button>
+                                        {% endif %}
+                                        <form action="{{ url_for('drivers.decline_request', match_id=match.id) }}" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-danger">
+                                                <i class="fas fa-times me-1"></i> Decline
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Confirmed Requests -->
+    {% if confirmed_requests %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Confirmed Passengers ({{ confirmed_requests|length }})</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for match in confirmed_requests %}
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-user text-secondary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-0">{{ match.ride_request.rider.full_name }}</h5>
+                                            <div>
+                                                <small class="text-muted">Email: {{ match.ride_request.rider.email }}</small><br>
+                                                <small class="text-muted">Phone: {{ match.ride_request.rider.phone_number }}</small>
+                                            </div>
+                                            <div class="mt-2">
+                                                <small class="text-muted">From: {{ match.ride_request.origin }}</small><br>
+                                                <small class="text-muted">To: {{ match.ride_request.destination }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <span class="badge bg-success">Confirmed</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Declined Requests -->
+    {% if declined_requests %}
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h4 class="mb-0">Declined Requests ({{ declined_requests|length }})</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    {% for match in declined_requests %}
+                        <div class="list-group-item">
+                            <div class="row align-items-center">
+                                <div class="col-md-8 mb-3 mb-md-0">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                                <i class="fas fa-user text-secondary"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3">
+                                            <h5 class="mb-0">{{ match.ride_request.rider.full_name }}</h5>
+                                            <small class="text-muted">Requested on <span class="format-date">{{ match.created_at }}</span></small>
+                                            <div class="mt-2">
+                                                <small class="text-muted">From: {{ match.ride_request.origin }}</small><br>
+                                                <small class="text-muted">To: {{ match.ride_request.destination }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <span class="badge bg-danger">Declined</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if not ride_matches %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-user-friends fa-3x mb-3 text-muted"></i>
+                <h3>No Requests Yet</h3>
+                <p class="text-muted">You haven't received any ride requests for this offer yet.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format the dates displayed on the page
+        formatDates();
+    });
+</script>
+{% endblock %}

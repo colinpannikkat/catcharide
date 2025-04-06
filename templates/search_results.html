@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+
+{% block title %}Search Results - CatchARide{% endblock %}
+
+{% block head_content %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Available Rides</h2>
+            <p class="text-muted">
+                From <strong>{{ origin }}</strong> to <strong>{{ destination }}</strong> on <strong>{{ departure_date }}</strong>
+            </p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-outline-primary">
+                <i class="fas fa-search me-2"></i> New Search
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-5 mb-4 mb-lg-0">
+            {% if ride_offers %}
+                <h4 class="mb-3">{{ ride_offers|length }} ride(s) found</h4>
+                <p class="text-muted mb-3">Optimized by route efficiency</p>
+                
+                <div class="ride-list">
+                    {% for offer in ride_offers %}
+                        <div class="card ride-card mb-3" id="ride-{{ offer.id }}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <span class="format-datetime">{{ offer.departure_time }}</span>
+                                {% if offer.available_seats > 0 %}
+                                    <span class="badge bg-success">{{ offer.available_seats }} seats available</span>
+                                {% else %}
+                                    <span class="badge bg-danger">Full</span>
+                                {% endif %}
+                            </div>
+                            <div class="card-body">
+                                <div class="ride-route mb-3">
+                                    <div>
+                                        <small class="text-muted">From</small>
+                                        <h5>{{ offer.origin }}</h5>
+                                    </div>
+                                    <div class="route-arrow">
+                                        <i class="fas fa-arrow-right"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">To</small>
+                                        <h5>{{ offer.destination }}</h5>
+                                    </div>
+                                </div>
+                                
+                                <div class="driver-info">
+                                    <div class="driver-avatar">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <small class="text-muted">Driver</small>
+                                        <h6 class="driver-name mb-0">{{ offer.driver_name }}</h6>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-6">
+                                        <small class="text-muted">Duration</small>
+                                        <p class="mb-0">{{ (offer.total_duration/60)|int }} minutes</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-muted">Distance</small>
+                                        <p class="mb-0">{{ (offer.total_distance/1609.34)|round(1) }} miles</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex mt-3">
+                                    <a href="{{ url_for('routes.ride_details', ride_offer_id=offer.id) }}" class="btn btn-outline-primary me-2">
+                                        View Details
+                                    </a>
+                                    {% if current_user.is_authenticated and offer.available_seats > 0 %}
+                                        <a href="{{ url_for('passengers.apply_ride', ride_offer_id=offer.id) }}" class="btn btn-primary">
+                                            Apply for Ride
+                                        </a>
+                                    {% elif not current_user.is_authenticated %}
+                                        <a href="{{ url_for('auth.login') }}?next={{ url_for('passengers.apply_ride', ride_offer_id=offer.id) }}" class="btn btn-primary">
+                                            Login to Apply
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                        <h3>No Rides Found</h3>
+                        <p class="text-muted">We couldn't find any rides matching your search criteria.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i> New Search
+                            </a>
+                            <a href="{{ url_for('passengers.create_request') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-plus me-2"></i> Create Ride Request
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h4 class="mb-3">Route Map</h4>
+                    <div id="map" style="height: 400px;"></div>
+                    <div id="route-info" class="mt-3">
+                        <!-- Route information will be displayed here -->
+                    </div>
+                </div>
+            </div>
+            
+            {% if current_user.is_authenticated and ride_offers|length == 0 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="mb-0">No Rides Available?</h4>
+                    </div>
+                    <div class="card-body">
+                        <p>Can't find a ride that suits your needs? You have options:</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 bg-light">
+                                    <div class="card-body">
+                                        <h5>Create a Request</h5>
+                                        <p>Post your ride needs and let drivers find you.</p>
+                                        <a href="{{ url_for('passengers.create_request') }}?origin={{ origin }}&destination={{ destination }}&departure_date={{ departure_date }}" class="btn btn-outline-primary">
+                                            Create Ride Request
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100 bg-light">
+                                    <div class="card-body">
+                                        <h5>Offer a Ride</h5>
+                                        <p>Going this way? Offer a ride and share costs.</p>
+                                        <a href="{{ url_for('drivers.create_offer') }}?origin={{ origin }}&destination={{ destination }}&departure_date={{ departure_date }}" class="btn btn-outline-primary">
+                                            Offer a Ride
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data for JavaScript -->
+<script type="application/json" id="ride-offers-data">
+    {{ ride_offers|tojson }}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/route.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format the dates displayed on the page
+    formatDates();
+    
+    // Check if Google Maps script is loaded, if not, load it
+    if (typeof google === 'undefined') {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    } else {
+        initMap();
+    }
+});
+</script>
+{% endblock %}

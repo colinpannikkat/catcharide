@@ -1,0 +1,188 @@
+{% extends "layout.html" %}
+
+{% block title %}Ride Details - CatchARide{% endblock %}
+
+{% block head_content %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h3 class="card-title mb-4">Ride Details</h3>
+                    
+                    <div class="ride-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Driver</div>
+                            <div class="detail-value">{{ ride_offer.driver.full_name }}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Departure</div>
+                            <div class="detail-value format-datetime">{{ ride_offer.departure_time }}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">From</div>
+                            <div class="detail-value">{{ ride_offer.origin }}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">To</div>
+                            <div class="detail-value">{{ ride_offer.destination }}</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Available Seats</div>
+                            <div class="detail-value">{{ ride_offer.available_seats }}</div>
+                        </div>
+                        
+                        {% if ride_offer.description %}
+                        <div class="detail-row">
+                            <div class="detail-label">Description</div>
+                            <div class="detail-value">{{ ride_offer.description }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if current_user.is_authenticated and current_user.id != ride_offer.driver_id and ride_offer.available_seats > 0 %}
+                        <div class="mt-4">
+                            <a href="{{ url_for('passengers.apply_ride', ride_offer_id=ride_offer.id) }}" class="btn btn-primary">Apply for This Ride</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if optimized_data %}
+                <div id="optimized-route-info" class="mb-4">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Optimized Route (With Your Trip)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Total Duration:</strong> {{ (optimized_data.total_duration/60)|int }} minutes</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Total Distance:</strong> {{ (optimized_data.total_distance/1609.34)|round(1) }} miles</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div id="map" style="height: 400px;"></div>
+            
+            <div id="route-info" class="mt-3">
+                <!-- Route information will be displayed here by the map.js script -->
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">About the Driver</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px;">
+                            <i class="fas fa-user fa-2x text-secondary"></i>
+                        </div>
+                        <h4>{{ ride_offer.driver.full_name }}</h4>
+                        {% if ride_offer.driver.is_verified %}
+                            <span class="badge bg-success">Verified</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <small class="text-muted">Contact (visible after confirmation)</small>
+                        {% if current_user.is_authenticated and ride_offer.driver_id == current_user.id %}
+                            <p class="mb-0">{{ ride_offer.driver.email }}</p>
+                            <p class="mb-0">{{ ride_offer.driver.phone_number }}</p>
+                        {% else %}
+                            {% set is_confirmed = false %}
+                            {% for match in ride_offer.ride_matches %}
+                                {% if match.confirmed and match.ride_request.rider_id == current_user.id %}
+                                    {% set is_confirmed = true %}
+                                {% endif %}
+                            {% endfor %}
+                            
+                            {% if is_confirmed %}
+                                <p class="mb-0">{{ ride_offer.driver.email }}</p>
+                                <p class="mb-0">{{ ride_offer.driver.phone_number }}</p>
+                            {% else %}
+                                <p class="mb-0 text-muted"><i class="fas fa-lock me-1"></i> Available after confirmation</p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            {% if ride_offer.ride_matches.filter_by(confirmed=True).count() > 0 %}
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Confirmed Passengers</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            {% for match in ride_offer.ride_matches %}
+                                {% if match.confirmed %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>{{ match.ride_request.rider.full_name }}</strong>
+                                            <div class="text-muted small">
+                                                From: {{ match.ride_request.origin.split(',')[0] }}
+                                                <br>
+                                                To: {{ match.ride_request.destination.split(',')[0] }}
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-success rounded-pill">Confirmed</span>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Hidden data for JavaScript -->
+<script type="application/json" id="ride-details-data">
+    {{ ride_offer.to_dict()|tojson }}
+</script>
+
+{% if optimized_data %}
+<script type="application/json" id="optimized-route-data">
+    {{ optimized_data|tojson }}
+</script>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script src="{{ url_for('static', filename='js/route.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format the dates displayed on the page
+    formatDates();
+    
+    // Check if Google Maps script is loaded, if not, load it
+    if (typeof google === 'undefined') {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    } else {
+        initMap();
+    }
+});
+</script>
+{% endblock %}

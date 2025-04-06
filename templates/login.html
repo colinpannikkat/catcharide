@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}Login - CatchARide{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0 text-center">Sign In</h3>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('auth.login') }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control", placeholder="Enter your email") }}
+                            {% for error in form.email.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            {{ form.password.label(class="form-label") }}
+                            {{ form.password(class="form-control", placeholder="Enter your password") }}
+                            {% for error in form.password.errors %}
+                                <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        
+                        <div class="mb-3 form-check">
+                            {{ form.remember_me(class="form-check-input") }}
+                            {{ form.remember_me.label(class="form-check-label") }}
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </form>
+                    
+                    <div class="mt-4 text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-3">
+                            <hr class="flex-grow-1 me-2">
+                            <span class="text-muted">OR</span>
+                            <hr class="flex-grow-1 ms-2">
+                        </div>
+                        
+                        <a href="{{ url_for('google_auth.google_login') }}" class="btn btn-outline-dark d-flex align-items-center justify-content-center">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" alt="Google logo" class="me-2" style="height: 18px;">
+                            Sign in with Google
+                        </a>
+                    </div>
+                </div>
+                <div class="card-footer bg-white py-3 text-center">
+                    <div>Don't have an account? <a href="{{ url_for('auth.register') }}" class="text-decoration-none">Register now</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

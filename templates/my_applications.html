@@ -1,0 +1,130 @@
+{% extends "layout.html" %}
+
+{% block title %}My Applications - CatchARide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>My Ride Applications</h2>
+            <p class="text-muted">Track the status of rides you've applied for</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i> Find More Rides
+            </a>
+        </div>
+    </div>
+
+    {% if ride_matches %}
+        <div class="row">
+            {% for match in ride_matches %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 ride-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="format-date">{{ match.ride_request.departure_time }}</span>
+                            {% if match.confirmed %}
+                                <span class="badge bg-success">Confirmed</span>
+                            {% elif match.pending %}
+                                <span class="badge bg-warning">Pending</span>
+                            {% else %}
+                                <span class="badge bg-danger">Declined</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="ride-route mb-3">
+                                <div>
+                                    <small class="text-muted">From</small>
+                                    <h5>{{ match.ride_request.origin }}</h5>
+                                </div>
+                                <div class="route-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">To</small>
+                                    <h5>{{ match.ride_request.destination }}</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="driver-info mb-3">
+                                <div class="driver-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Driver</small>
+                                    <h6 class="driver-name mb-0">{{ match.ride_offer.driver.full_name }}</h6>
+                                </div>
+                            </div>
+                            
+                            <div class="ride-meta">
+                                <div>
+                                    <small class="text-muted">Applied On</small>
+                                    <p class="mb-0 format-date">{{ match.created_at }}</p>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Seats Available</small>
+                                    <p class="mb-0">{{ match.ride_offer.available_seats }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex mt-3">
+                                <a href="{{ url_for('routes.ride_details', ride_offer_id=match.ride_offer_id) }}" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-info-circle me-1"></i> View Details
+                                </a>
+                                
+                                {% if not match.confirmed %}
+                                    <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ match.id }}">
+                                        <i class="fas fa-times me-1"></i> Cancel Application
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cancel Application Modal -->
+                <div class="modal fade" id="cancelModal{{ match.id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ match.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="cancelModalLabel{{ match.id }}">Confirm Cancellation</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to cancel your application for this ride? This action cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep Application</button>
+                                <form action="{{ url_for('passengers.cancel_application', match_id=match.id) }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-danger">Yes, Cancel</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-clipboard-list fa-3x mb-3 text-muted"></i>
+                <h3>No Applications Yet</h3>
+                <p class="text-muted">You haven't applied for any rides yet. Start by searching for available rides.</p>
+                <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary">
+                    <i class="fas fa-search me-2"></i> Find Rides
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format the dates displayed on the page
+        formatDates();
+    });
+</script>
+{% endblock %}

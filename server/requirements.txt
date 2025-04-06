@@ -1,6 +1,0 @@
-psycopg
-flask
-python-dotenv
-requests
-pydantic
-flask-pydantic

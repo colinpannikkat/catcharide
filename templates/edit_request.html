@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+
+{% block title %}Edit Ride Request - CatchARide{% endblock %}
+
+{% block head_content %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0">Edit Ride Request</h3>
+                        <p class="text-muted mb-0">Update your ride request details</p>
+                    </div>
+                    <a href="{{ url_for('passengers.my_requests') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i> Back to My Requests
+                    </a>
+                </div>
+                
+                <div class="card-body p-4">
+                    <form method="POST" action="{{ url_for('passengers.edit_request', ride_request_id=request.view_args.ride_request_id) }}" id="edit-request-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>Origin</h5>
+                                <div class="location-input">
+                                    <label for="origin" class="form-label">From</label>
+                                    <input type="text" id="origin" class="form-control" placeholder="Enter pickup location" required>
+                                    {{ form.origin(id="origin-place-id", type="hidden") }}
+                                    {{ form.origin_display(id="origin-display", type="hidden") }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Destination</h5>
+                                <div class="location-input">
+                                    <label for="destination" class="form-label">To</label>
+                                    <input type="text" id="destination" class="form-control" placeholder="Enter drop-off location" required>
+                                    {{ form.destination(id="destination-place-id", type="hidden") }}
+                                    {{ form.destination_display(id="destination-display", type="hidden") }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div id="map" style="height: 300px;"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ form.departure_time.label(class="form-label") }}
+                                    {{ form.departure_time(class="form-control", type="datetime-local") }}
+                                    {% for error in form.departure_time.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                    <small class="form-text text-muted">When do you want to leave?</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="route-info" class="mb-4 d-none">
+                            <!-- Route information will be displayed here -->
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg", value="Update Ride Request") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners to update map when both origin and destination are selected
+    const originInput = document.getElementById('origin');
+    const destinationInput = document.getElementById('destination');
+    
+    // Initialize with values from form fields
+    originInput.value = "{{ form.origin.data }}";
+    destinationInput.value = "{{ form.origin_display.data or form.origin.data }}";
+    document.getElementById('origin-place-id').value = "{{ form.origin.data }}";
+    document.getElementById('destination-place-id').value = "{{ form.destination.data }}";
+    document.getElementById('origin-display').value = "{{ form.origin_display.data or form.origin.data }}";
+    document.getElementById('destination-display').value = "{{ form.destination_display.data or form.destination.data }}";
+    
+    // Check if Google Maps script is loaded, if not, load it
+    if (typeof google === 'undefined') {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    } else {
+        initMap();
+    }
+    
+    // When both origin and destination are set, display the route
+    let checkRouteInterval = setInterval(function() {
+        const originPlaceId = document.getElementById('origin-place-id').value;
+        const destPlaceId = document.getElementById('destination-place-id').value;
+        
+        if (originPlaceId && destPlaceId) {
+            clearInterval(checkRouteInterval);
+            displayRoute(originPlaceId, destPlaceId);
+            document.getElementById('route-info').classList.remove('d-none');
+        }
+    }, 1000);
+});
+</script>
+{% endblock %}

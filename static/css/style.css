@@ -1,0 +1,348 @@
+:root {
+  --osu-orange: #D73F09;
+  --osu-black: #000000;
+  --light-gray: #f8f9fa;
+  --dark-gray: #343a40;
+  --medium-gray: #6c757d;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+  --info: #17a2b8;
+  --border-radius: 0.25rem;
+  --box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --transition: all 0.2s ease-in-out;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--light-gray);
+  color: var(--dark-gray);
+  line-height: 1.6;
+}
+
+/* Header and Navigation */
+.navbar {
+  background-color: var(--osu-black);
+  box-shadow: var(--box-shadow);
+}
+
+.navbar-brand {
+  color: white;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar-brand .logo {
+  margin-right: 0.5rem;
+}
+
+.nav-link {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+.nav-link:hover, .nav-link:focus {
+  color: white !important;
+}
+
+.nav-link.active {
+  color: var(--osu-orange) !important;
+}
+
+.dropdown-menu {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.dropdown-item:active {
+  background-color: var(--osu-orange);
+}
+
+/* Hero Section */
+.hero {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://communications.oregonstate.edu/sites/communications.oregonstate.edu/files/memorial_union_aerials_2019-466.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  text-align: center;
+  padding: 5rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.25rem;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+}
+
+.btn-primary {
+  background-color: var(--osu-orange);
+  border-color: var(--osu-orange);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: #b33508;
+  border-color: #b33508;
+}
+
+.btn-outline-primary {
+  color: var(--osu-orange);
+  border-color: var(--osu-orange);
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus {
+  background-color: var(--osu-orange);
+  border-color: var(--osu-orange);
+}
+
+/* Cards */
+.card {
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin-bottom: 1.5rem;
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.card-header {
+  background-color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  font-weight: 600;
+}
+
+.card-title {
+  margin-bottom: 0.5rem;
+  color: var(--osu-black);
+}
+
+.badge-primary {
+  background-color: var(--osu-orange);
+}
+
+/* Forms */
+.form-control:focus {
+  border-color: var(--osu-orange);
+  box-shadow: 0 0 0 0.2rem rgba(215, 63, 9, 0.25);
+}
+
+.form-label {
+  font-weight: 500;
+}
+
+/* Map and Route Display */
+#map {
+  height: 400px;
+  width: 100%;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--box-shadow);
+}
+
+.route-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.route-info span {
+  font-weight: 500;
+}
+
+/* Alerts and Notifications */
+.alert {
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+}
+
+.alert-success {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: #721c24;
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-color: #ffeeba;
+  color: #856404;
+}
+
+.alert-info {
+  background-color: #d1ecf1;
+  border-color: #bee5eb;
+  color: #0c5460;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--osu-black);
+  color: white;
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.8);
+  transition: var(--transition);
+}
+
+.footer a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-heading {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-icons a {
+  color: white;
+  font-size: 1.5rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    font-size: 1rem;
+  }
+}
+
+/* Ride Details */
+.ride-details {
+  margin-bottom: 2rem;
+}
+
+.ride-details .detail-row {
+  display: flex;
+  margin-bottom: 0.75rem;
+}
+
+.ride-details .detail-label {
+  width: 150px;
+  font-weight: 600;
+}
+
+.ride-details .detail-value {
+  flex: 1;
+}
+
+/* Ride List */
+.ride-list {
+  margin-top: 2rem;
+}
+
+.ride-card {
+  margin-bottom: 1.5rem;
+}
+
+.ride-card .card-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.ride-card .ride-route {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ride-card .route-arrow {
+  margin: 0 1rem;
+  color: var(--medium-gray);
+}
+
+.ride-card .ride-meta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.ride-card .driver-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.ride-card .driver-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--light-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+}
+
+.ride-card .driver-name {
+  font-weight: 500;
+}
+
+/* Search Form */
+.search-form {
+  margin-bottom: 2rem;
+}
+
+.location-input {
+  margin-bottom: 1.5rem;
+}
+
+.place-search-input {
+  position: relative;
+}
+
+.place-search-results {
+  position: absolute;
+  width: 100%;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.place-result-item {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.place-result-item:hover {
+  background-color: var(--light-gray);
+}

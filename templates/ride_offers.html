@@ -1,0 +1,186 @@
+{% extends "layout.html" %}
+
+{% block title %}Available Ride Offers - CatchARide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Available Ride Offers</h2>
+            <p class="text-muted">Browse all available rides</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i> Search Specific Routes
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Options -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" id="filter-form">
+                <div class="row">
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label for="date-filter" class="form-label">Date</label>
+                        <input type="date" id="date-filter" name="date" class="form-control" value="{{ request.args.get('date', '') }}">
+                    </div>
+                    <div class="col-md-4 mb-3 mb-md-0">
+                        <label for="origin-filter" class="form-label">Origin</label>
+                        <input type="text" id="origin-filter" name="origin" class="form-control" placeholder="Enter origin" value="{{ request.args.get('origin', '') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="destination-filter" class="form-label">Destination</label>
+                        <input type="text" id="destination-filter" name="destination" class="form-control" placeholder="Enter destination" value="{{ request.args.get('destination', '') }}">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-filter me-2"></i> Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if ride_offers %}
+        <div class="row">
+            {% for offer in ride_offers %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 ride-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="format-datetime">{{ offer.departure_time }}</span>
+                            {% if offer.available_seats > 0 %}
+                                <span class="badge bg-success">{{ offer.available_seats }} seats available</span>
+                            {% else %}
+                                <span class="badge bg-danger">Full</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="ride-route mb-3">
+                                <div>
+                                    <small class="text-muted">From</small>
+                                    <h5>{{ offer.origin }}</h5>
+                                </div>
+                                <div class="route-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">To</small>
+                                    <h5>{{ offer.destination }}</h5>
+                                </div>
+                            </div>
+                            
+                            <div class="driver-info mb-3">
+                                <div class="driver-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Driver</small>
+                                    <h6 class="driver-name mb-0">{{ offer.driver.full_name }}</h6>
+                                </div>
+                            </div>
+                            
+                            {% if offer.description %}
+                                <div class="mb-3">
+                                    <small class="text-muted">Description</small>
+                                    <p>{{ offer.description }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="d-flex mt-3">
+                                <a href="{{ url_for('routes.ride_details', ride_offer_id=offer.id) }}" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-info-circle me-1"></i> View Details
+                                </a>
+                                
+                                {% if current_user.is_authenticated and offer.available_seats > 0 and current_user.id != offer.driver_id %}
+                                    <a href="{{ url_for('passengers.apply_ride', ride_offer_id=offer.id) }}" class="btn btn-primary">
+                                        <i class="fas fa-hand-paper me-1"></i> Apply
+                                    </a>
+                                {% elif not current_user.is_authenticated %}
+                                    <a href="{{ url_for('auth.login') }}?next={{ url_for('passengers.apply_ride', ride_offer_id=offer.id) }}" class="btn btn-primary">
+                                        <i class="fas fa-sign-in-alt me-1"></i> Login to Apply
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if pagination and pagination.pages > 1 %}
+            <nav aria-label="Page navigation" class="my-4">
+                <ul class="pagination justify-content-center">
+                    {% if pagination.has_prev %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('routes.ride_offers', page=pagination.prev_num, **request.args) }}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    
+                    {% for page in pagination.iter_pages() %}
+                        {% if page %}
+                            <li class="page-item {% if page == pagination.page %}active{% endif %}">
+                                <a class="page-link" href="{{ url_for('routes.ride_offers', page=page, **request.args) }}">{{ page }}</a>
+                            </li>
+                        {% else %}
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">...</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if pagination.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ url_for('routes.ride_offers', page=pagination.next_num, **request.args) }}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-car fa-3x mb-3 text-muted"></i>
+                <h3>No Ride Offers Available</h3>
+                <p class="text-muted">There are currently no ride offers that match your criteria.</p>
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('drivers.create_offer') }}" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i> Offer a Ride
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login to Offer a Ride
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format the dates displayed on the page
+        formatDates();
+    });
+</script>
+{% endblock %}

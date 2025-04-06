@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}My Ride Offers - CatchARide{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4">
+        <div class="col">
+            <h2>My Ride Offers</h2>
+            <p class="text-muted">Manage all the rides you're offering</p>
+        </div>
+        <div class="col-auto">
+            <a href="{{ url_for('drivers.create_offer') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Offer a New Ride
+            </a>
+        </div>
+    </div>
+
+    {% if ride_offers %}
+        <div class="row">
+            {% for offer in ride_offers %}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 ride-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="format-date">{{ offer.departure_time }}</span>
+                            {% if offer.available_seats > 0 %}
+                                <span class="badge bg-success">{{ offer.available_seats }} seats available</span>
+                            {% else %}
+                                <span class="badge bg-danger">Full</span>
+                            {% endif %}
+                        </div>
+                        <div class="card-body">
+                            <div class="ride-route mb-3">
+                                <div>
+                                    <small class="text-muted">From</small>
+                                    <h5>{{ offer.origin }}</h5>
+                                </div>
+                                <div class="route-arrow">
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
+                                <div>
+                                    <small class="text-muted">To</small>
+                                    <h5>{{ offer.destination }}</h5>
+                                </div>
+                            </div>
+                            
+                            {% if offer.description %}
+                                <div class="mb-3">
+                                    <small class="text-muted">Description</small>
+                                    <p>{{ offer.description }}</p>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="d-flex mt-3">
+                                <a href="{{ url_for('drivers.ride_requests', ride_offer_id=offer.id) }}" class="btn btn-outline-primary me-2">
+                                    <i class="fas fa-users me-1"></i> Requests
+                                    {% set requests_count = offer.ride_matches.count() %}
+                                    {% if requests_count > 0 %}
+                                        <span class="badge bg-danger ms-1">{{ requests_count }}</span>
+                                    {% endif %}
+                                </a>
+                                <a href="{{ url_for('drivers.edit_offer', ride_offer_id=offer.id) }}" class="btn btn-outline-secondary me-2">
+                                    <i class="fas fa-edit me-1"></i> Edit
+                                </a>
+                                <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ offer.id }}">
+                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delete Confirmation Modal -->
+                <div class="modal fade" id="deleteModal{{ offer.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ offer.id }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel{{ offer.id }}">Confirm Deletion</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure you want to delete this ride offer? This action cannot be undone.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form action="{{ url_for('drivers.delete_offer', ride_offer_id=offer.id) }}" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-car fa-3x mb-3 text-muted"></i>
+                <h3>No Ride Offers Yet</h3>
+                <p class="text-muted">You haven't offered any rides yet. Start sharing your journey with others!</p>
+                <a href="{{ url_for('drivers.create_offer') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i> Offer a Ride
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format the dates displayed on the page
+        formatDates();
+    });
+</script>
+{% endblock %}

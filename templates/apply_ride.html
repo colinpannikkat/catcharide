@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block title %}Apply for Ride - CatchARide{% endblock %}
+
+{% block head_content %}
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow">
+                <div class="card-header bg-white">
+                    <h3 class="mb-0">Apply for Ride</h3>
+                    <p class="text-muted mb-0">Customize your pickup and drop-off details</p>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="mb-4">
+                        <h5>Ride Details</h5>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3 mb-md-0">
+                                        <p class="mb-1"><strong>Driver:</strong> {{ ride_offer.driver.full_name }}</p>
+                                        <p class="mb-1"><strong>Departure:</strong> <span class="format-datetime">{{ ride_offer.departure_time }}</span></p>
+                                        <p class="mb-0"><strong>Available Seats:</strong> {{ ride_offer.available_seats }}</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-1"><strong>From:</strong> {{ ride_offer.origin }}</p>
+                                        <p class="mb-1"><strong>To:</strong> {{ ride_offer.destination }}</p>
+                                        {% if ride_offer.description %}
+                                            <p class="mb-0"><strong>Description:</strong> {{ ride_offer.description }}</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form method="POST" action="{{ url_for('passengers.apply_ride', ride_offer_id=ride_offer.id) }}" id="apply-form">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <h5>Your Pickup Location</h5>
+                                <div class="location-input">
+                                    <label for="origin" class="form-label">From</label>
+                                    <input type="text" id="origin" class="form-control" placeholder="Enter pickup location" required>
+                                    {{ form.origin(id="origin-place-id", type="hidden") }}
+                                    {{ form.origin_display(id="origin-display", type="hidden") }}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Your Drop-off Location</h5>
+                                <div class="location-input">
+                                    <label for="destination" class="form-label">To</label>
+                                    <input type="text" id="destination" class="form-control" placeholder="Enter drop-off location" required>
+                                    {{ form.destination(id="destination-place-id", type="hidden") }}
+                                    {{ form.destination_display(id="destination-display", type="hidden") }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div id="map" style="height: 300px;"></div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ form.departure_time.label(class="form-label") }}
+                                    {{ form.departure_time(class="form-control", type="datetime-local") }}
+                                    {% for error in form.departure_time.errors %}
+                                        <div class="text-danger">{{ error }}</div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div id="route-info" class="mb-4 d-none">
+                            <!-- Route information will be displayed here -->
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            By applying for this ride, you're expressing interest in joining. The driver will review your request and decide whether to accept or decline.
+                        </div>
+                        
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/map.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format the dates displayed on the page
+    formatDates();
+    
+    // Initialize with default values from the ride offer
+    document.getElementById('origin').value = "{{ ride_offer.origin }}";
+    document.getElementById('destination').value = "{{ ride_offer.destination }}";
+    document.getElementById('origin-place-id').value = "{{ ride_offer.origin }}";
+    document.getElementById('destination-place-id').value = "{{ ride_offer.destination }}";
+    document.getElementById('origin-display').value = "{{ ride_offer.origin }}";
+    document.getElementById('destination-display').value = "{{ ride_offer.destination }}";
+    
+    // Check if Google Maps script is loaded, if not, load it
+    if (typeof google === 'undefined') {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&libraries=places,geometry&callback=initMap`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    } else {
+        initMap();
+    }
+    
+    // When both origin and destination are set, display the route
+    let checkRouteInterval = setInterval(function() {
+        const originPlaceId = document.getElementById('origin-place-id').value;
+        const destPlaceId = document.getElementById('destination-place-id').value;
+        
+        if (originPlaceId && destPlaceId) {
+            clearInterval(checkRouteInterval);
+            displayRoute(originPlaceId, destPlaceId);
+            document.getElementById('route-info').classList.remove('d-none');
+        }
+    }, 1000);
+});
+</script>
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends "layout.html" %}
+
+{% block title %}CatchARide - Connect, Share, Ride{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Connect, Share, Ride</h1>
+        <p>CatchARide connects drivers with available seats to passengers looking for a ride. Save money, reduce emissions, and make connections along the way.</p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary btn-lg">Find a Ride</a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('drivers.create_offer') }}" class="btn btn-outline-light btn-lg">Offer a Ride</a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg">Sign Up</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container py-5">
+    <h2 class="text-center mb-5">Why CatchARide?</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-route fa-3x mb-3" style="color: var(--osu-orange);"></i>
+                    <h3 class="card-title">Optimized Routes</h3>
+                    <p class="card-text">Our advanced algorithm finds the most efficient routes to connect drivers and passengers, saving time and fuel.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-dollar-sign fa-3x mb-3" style="color: var(--osu-orange);"></i>
+                    <h3 class="card-title">Save Money</h3>
+                    <p class="card-text">Share the cost of your journey with others heading the same way. Drivers earn, passengers save.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center py-4">
+                    <i class="fas fa-leaf fa-3x mb-3" style="color: var(--osu-orange);"></i>
+                    <h3 class="card-title">Eco-Friendly</h3>
+                    <p class="card-text">Reduce your carbon footprint by sharing rides. Fewer cars means less traffic and lower emissions.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">How It Works</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="text-center">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px; box-shadow: var(--box-shadow);">
+                        <span class="fs-1 fw-bold" style="color: var(--osu-orange);">1</span>
+                    </div>
+                    <h3>Create an Account</h3>
+                    <p>Sign up with your details. Verify your email to start offering or requesting rides.</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="text-center">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px; box-shadow: var(--box-shadow);">
+                        <span class="fs-1 fw-bold" style="color: var(--osu-orange);">2</span>
+                    </div>
+                    <h3>Post or Find Rides</h3>
+                    <p>Offer a ride as a driver or search for available rides as a passenger.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="text-center">
+                    <div class="bg-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-4" style="width: 100px; height: 100px; box-shadow: var(--box-shadow);">
+                        <span class="fs-1 fw-bold" style="color: var(--osu-orange);">3</span>
+                    </div>
+                    <h3>Connect & Travel</h3>
+                    <p>Confirm your ride, meet your driver or passengers, and enjoy your journey together.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials -->
+<section class="container py-5">
+    <h2 class="text-center mb-5">What Our Users Say</h2>
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="card-text">"I've been using CatchARide for my commute to OSU campus. It's saved me so much on gas and parking fees!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="flex-shrink-0">
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">Alex J.</h5>
+                            <small class="text-muted">Student</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                    </div>
+                    <p class="card-text">"As a driver, I offset my travel costs by sharing my ride with others. The route optimization feature is amazing!"</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="flex-shrink-0">
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">Sarah M.</h5>
+                            <small class="text-muted">Faculty Member</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star text-warning"></i>
+                        <i class="fas fa-star-half-alt text-warning"></i>
+                    </div>
+                    <p class="card-text">"I travel between Portland and Corvallis frequently. CatchARide has made it easy to find reliable rides and make new friends."</p>
+                    <div class="d-flex align-items-center mt-3">
+                        <div class="flex-shrink-0">
+                            <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">Michael L.</h5>
+                            <small class="text-muted">Research Assistant</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="bg-dark text-white py-5">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to start sharing rides?</h2>
+        <p class="lead mb-4">Join thousands of other OSU community members who are already saving money and reducing emissions.</p>
+        <div class="d-flex justify-content-center gap-3">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('routes.search_rides') }}" class="btn btn-primary btn-lg">Find a Ride</a>
+            <a href="{{ url_for('drivers.create_offer') }}" class="btn btn-outline-light btn-lg">Offer a Ride</a>
+            {% else %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg">Sign Up Now</a>
+            <a href="{{ url_for('auth.login') }}" class="btn btn-outline-light btn-lg">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
