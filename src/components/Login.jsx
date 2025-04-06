@@ -12,7 +12,7 @@ async function checkUser(token) {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
         },
-        body: JSON.stringify({ 'token' : token }),
+        body: JSON.stringify({ token }),
     });
 
     // Store the token in local storage
