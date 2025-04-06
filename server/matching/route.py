@@ -1,5 +1,47 @@
 import requests
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+import os
+from google.oauth2.credentials import Credentials
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
+import json
+
+load_dotenv()
+
+def get_oauth_token():
+    service_info = json.load(open('server/catcharide-456005-b017707003cb.json'))
+    credentials = service_account.Credentials.from_service_account_info(
+        service_info,
+        scopes=["https://www.googleapis.com/auth/cloud-platform"],
+    )
+    request_obj = Request()
+    credentials.refresh(request_obj)
+    os.environ["OAUTH_TOKEN"] = credentials.token
+    return credentials.token
+
+def refresh_oauth_token():
+    """
+    This function uses the stored refresh token along with your client credentials
+    to obtain a fresh OAuth access token from Google.
+    """
+
+    # Create a Credentials object with no current token but with a refresh token.
+    service_info = json.load(open('server/catcharide-456005-b017707003cb.json'))
+    creds = service_account.Credentials.from_service_account_info(
+        service_info,
+        scopes=["https://www.googleapis.com/auth/cloud-platform"],
+    )
+    try:
+        # Refresh the credentials. This sends a request to Google's token endpoint.
+        creds.refresh(Request())
+        new_token = creds.token
+
+        # Update the environment variable with the new token.
+        os.environ["OAUTH_TOKEN"] = new_token
+        # print("Refreshed OAuth token:", new_token)
+    except Exception as e:
+        print("Failed to refresh token:", e)
 
 class RouteOptimization:
     def __init__(self, project_id, oauth_token):
@@ -53,7 +95,12 @@ class RouteOptimization:
         response = requests.post(url, json=optimization_request, headers=headers)
         
         if response.status_code != 200:
-            raise Exception(f"Error: {response.status_code}, {response.text}")
+            refresh_oauth_token()
+            self.oauth_token = os.getenv("OAUTH_TOKEN")
+            headers["Authorization"] = f"Bearer {self.oauth_token}"
+            response = requests.post(url, json=optimization_request, headers=headers)
+            if response.status_code != 200:
+                raise Exception(f"Error: {response.status_code}, {response.text}")
         
         response = response.json()
         total_duration = response["metrics"]["aggregatedRouteMetrics"]["totalDuration"]
@@ -78,3 +125,12 @@ if __name__ == "__main__":
         ("ChIJ3VwciHg3wFQR1iwHMt0kbkY", "ChIJeeW8Vl8FlVQRhu0zaob_KX0")
     ]
     start_time = "2025-04-06T08:00:00Z"
+
+    refresh_oauth_token()
+
+    project_id = os.getenv("PROJECT_ID")
+    oauth_token = os.getenv("OAUTH_TOKEN")
+
+    route_optimizer = RouteOptimization(project_id, oauth_token)
+    result = route_optimizer.optimize_tours(vehicle_waypoint, shipment_waypoints, start_time)
+    print(result)

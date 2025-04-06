@@ -4,8 +4,16 @@ from pydantic import BaseModel, ValidationError
 from database.driver import DatabaseDriver
 import json
 import argparse
+from matching.route import RouteOptimization
+from dotenv import load_dotenv
+import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
+load_dotenv()
+route_optimizer = RouteOptimization(os.getenv['PROJECT_ID'], os.getenv['OAUTH_TOKEN'])
 
 db = DatabaseDriver({
     'host': 'localhost',
