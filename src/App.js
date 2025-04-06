@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Other pages an components 
 import Signup from "./components/Signup.jsx";
@@ -10,7 +10,7 @@ import LandingPage from "./components/LandingPage.jsx";
 function App() {
   return (
     <BrowserRouter>
-      <div className="container">
+      <div >
         <Routes>
           {/* Landing page route */}
           <Route path="/" element={<LandingPage />} />

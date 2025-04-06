@@ -8,7 +8,7 @@ const Navbar = () => {
         {/* #TODO insert logo */}
         <Link className="navbar-brand" to="/">
           <img
-            src="/logo192.png"  // change this later after AJ makes logo
+            src="/IMG_1747.png"  // change this later after AJ makes logo
             width="30"
             height="30"
             className="d-inline-block align-text-top me-2"
