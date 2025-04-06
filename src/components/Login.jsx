@@ -8,13 +8,16 @@ const Login = () => {
 
   const handleSuccess = async (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
-    const token = credentialResponse.credential;
+    let token = credentialResponse.credential;
 
     try {
       // Send token to your Flask backend for verification and user check.
       const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
         body: JSON.stringify({ token }),
       });
       
