@@ -11,34 +11,36 @@ const Login = () => {
     let token = credentialResponse.credential;
 
     try {
-      // Send token to your Flask backend for verification and user check.
-      const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
+        // Send token to your Flask backend for verification and user check.
+        const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+            
+                'Content-Type': 'application/json'
+           ,
             'Accept': 'application/json'
           },
-        body: JSON.stringify({ token }),
-      });
-      
-      console.log('Token:', token);
-      console.log('Response json: ', response.json);
-      console.log('Response body: ', response.body);
+            body: JSON.stringify({ token }),
+        });
+        
+        console.log('Token:', token);
+        console.log('Response json: ', response.json);
+        console.log('Response body: ', response.body);
 
-
-      const data = await response.json();
-      console.log('Backend response:', data);
-      
-      // Redirect based on the backend response.
-      if (data.exists) {
-        navigate('/homepage');
-        console.log('Data exists: navigating to homepage');
-      } else {
-        navigate('/register');
-        console.log('Data does notexists: navigating to register page');
-      }
+        const data = await response.json();
+        console.log('Backend response:', data);
+        
+        // Redirect based on the backend response.
+        if (data.exists) {
+            navigate('/homepage');
+            console.log('Data exists: navigating to homepage');
+        } else {
+            navigate('/register');
+            console.log('Data does notexists: navigating to register page');
+        }
     } catch (error) {
-      console.error('Error during user check:', error);
+        console.error('Error during user check:', error);
     }
   };
 
