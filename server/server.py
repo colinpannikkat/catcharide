@@ -8,7 +8,7 @@ from matching.route import RouteOptimization
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
-from custom_auth import authorization_bp
+from database.custom_auth import authorization_bp
 
 app = Flask(__name__)
 CORS(app)
