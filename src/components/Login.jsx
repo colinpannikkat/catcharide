@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 async function checkUser(token) {
     // Send token to your Flask backend for verification and user check.
-    const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
+    const response = await fetch('http://localhost:8000/api/checkUser', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -18,10 +18,13 @@ async function checkUser(token) {
     localStorage.setItem('authToken', token);
     
     console.log('Token:', token);
-    console.log('Response json: ', response.json);
-    console.log('Response body: ', response.body);
 
-    return body.json()
+    const result = await response.json();
+    if (response.ok) {
+        return result;
+    } else {
+        throw new Error(result.message || 'Failed to verify user');
+    }
 }
 
 const Login = () => {
@@ -37,11 +40,13 @@ const Login = () => {
         
         // Redirect based on the backend response.
         if (data.exists) {
-            navigate('/homepage');
-            console.log('Data exists: navigating to homepage');
+            if (!data.is_verified)
+                navigate('/verify');
+            else
+                navigate('/')
+            console.log('Data exists: navigating to verification page');
         } else {
-            navigate('/register');
-            console.log('Data does notexists: navigating to register page');
+            alert('Login data does not exists: try again');
         }
     } catch (error) {
         console.error('Error during user check:', error);

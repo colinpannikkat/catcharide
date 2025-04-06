@@ -45,7 +45,6 @@ class RideMatch:
     confirmed: bool
 
 class DatabaseDriver:
-
     def __init__(self, connection_params):
         self.conn = psycopg.connect(**connection_params)
 

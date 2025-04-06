@@ -46,6 +46,8 @@ def check_user():
             user = db.get_user_by_email(email)
         except Exception as e:
             print("User does not exist: ", e)
+        
+        if not user:
             user = db.create_user(
                 first_name=given_name,
                 last_name=family_name,
@@ -87,7 +89,7 @@ def check_user():
         print("Error verifying token:", e)
         return jsonify({"error": "Invalid token"}), 401
     
-@authorization_bp.route('/getUser', methods=['GET'])
+@authorization_bp.route('/getUser', methods=['POST'])
 def get_user():
     # Step 1: Get the token from the request headers.
     token = request.headers.get("Authorization")

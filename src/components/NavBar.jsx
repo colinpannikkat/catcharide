@@ -41,11 +41,6 @@ const Navbar = () => {
                 <button type="button" className="btn btn-primary btn-sm">Sign Up</button>
               </Link>
             </li>
-            <li>
-                <Link to="/verify">
-                    Verify
-                </Link>
-            </li>
           </ul>
         </div>
       </div>

@@ -12,7 +12,7 @@ from database.custom_auth import authorization_bp
 from verification.verification import IDVerification
 
 app = Flask(__name__)
-CORS(app, origins=["https://catcharide.sarvesh.me/*", "https//localhost:3000/*"])
+CORS(app, origins=["https://catcharide.sarvesh.me/*", "http://localhost:8000/*", "http://localhost:3000/*"])
 verify = IDVerification()
 
 load_dotenv()

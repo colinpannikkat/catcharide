@@ -4,18 +4,18 @@ import { useNavigate } from 'react-router-dom';
 
 async function getUser(token) {
     // Send token to your Flask backend for verification and user check.
-    const response = await fetch('https://catcharide.sarvesh.me/api/getUser', {
+    const response = await fetch('http://localhost:8000/api/getUser', {
         method: 'POST',
         mode: 'no-cors',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
-            'Authorization': `Bearer ${authToken}`
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ token }),
     });
 
-    return body.json()
+    return response.body.json()
 }
 
 const VerificationPage = () => {
@@ -62,7 +62,7 @@ const VerificationPage = () => {
             }
             try {
                 const res = await getUser()
-                if (data.exists) {
+                if (res.exists) {
                     formData.append("first_name", res.body.first_name);
                     formData.append("last_name", res.body.last_name);
                     formData.append("user_db_id", res.body.id)
@@ -75,12 +75,13 @@ const VerificationPage = () => {
             } catch (error) {
                 console.error('Error during user check:', error);
             }
-            const response = await fetch("https://catcharide.sarvesh.me/api/verify", {
+            const response = await fetch("http://localhost:8000/api/verify", {
                 method: "POST",
+                mode: "no-cors",
                 headers: {
                     Authorization: `Bearer ${authToken}`,
                 },
-                body: formData,
+                body: formData, // Content-Type will be set automatically
             });
 
             if (response.ok) {
