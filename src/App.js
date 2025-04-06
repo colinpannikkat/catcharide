@@ -1,28 +1,19 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 
-import Signup from './components/Signup.jsx';
-import Login from './components/Login.jsx';
-import NavBar from "./components/NavBar.jsx";
+// Other pages an components 
+import Signup from "./components/Signup.jsx";
+import Login from "./components/Login.jsx";
+import LandingPage from "./components/LandingPage.jsx";
+
 function App() {
   return (
     <BrowserRouter>
       <div className="container">
-        <NavBar />
         <Routes>
           {/* Landing page route */}
-          <Route 
-            path="/" 
-            element={
-              <img 
-                src="/landingpage.png"
-                alt="landingpageimg"
-                width="500"
-                height="700" 
-              />
-            } 
-          />
+          <Route path="/" element={<LandingPage />} />
           {/* Signup page route */}
           <Route path="/signup" element={<Signup />} />
           {/* Login page route */}
