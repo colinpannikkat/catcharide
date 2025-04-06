@@ -38,9 +38,9 @@ const LandingPage = () => {
                 Share your ride, split the cost, and make a new friend on the way
               </p>
               <div className="d-flex gap-2">
-                <a href="javascript:void(0)" className="btn btn-dark">
-                  Get started
-                </a>
+                {/* <a href="javascript:void(0)" className="btn btn-dark"> */}
+                  Get started by signing up or loggin in above
+                {/* </a> */}
               </div>
             </div>
             {/* Right Column: Image with padding */}
