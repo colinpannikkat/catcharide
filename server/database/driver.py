@@ -88,9 +88,13 @@ class DatabaseDriver:
         
     def get_user_by_email(self, email):
         sql = "SELECT id, first_name, last_name, email, phone_number, is_verified FROM users WHERE email = %s"
-        with self.conn.cursor(row_factory=class_row(User)) as cur:
-            cur.execute(sql, (email,))
-            return cur.fetchone()
+        try:
+            with self.conn.cursor(row_factory=class_row(User)) as cur:
+                cur.execute(sql, (email,))
+                return cur.fetchone()
+        except Exception as e:
+            self.conn.rollback()
+            raise e
         
     def update_user(self, user_id, **kwargs):
         fields = []

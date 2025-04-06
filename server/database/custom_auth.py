@@ -41,7 +41,18 @@ def check_user():
         print("User Info from Google:", given_name, family_name, email)
         
         # Step 4: Query the database using your provided method.
-        user = db.get_user_by_email(email)
+        user = None
+        try:
+            user = db.get_user_by_email(email)
+        except Exception as e:
+            print("User does not exist: ", e)
+            user = db.create_user(
+                first_name=given_name,
+                last_name=family_name,
+                email=email,
+                phone_number="000-000-0000"
+            )
+
         if user:
             # User exists: return user details along with Google info.
             return jsonify({
