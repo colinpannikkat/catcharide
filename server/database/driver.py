@@ -7,7 +7,6 @@ connection_params = {
     'port': 5432,
     'dbname': 'catcharide',
     'connect_timeout': 10,
-    'password': 'password',
 }
 
 @dataclass
