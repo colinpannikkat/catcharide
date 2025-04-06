@@ -23,7 +23,7 @@ db = DatabaseDriver({
     'port': 5432,
     'dbname': 'catcharide',
     'connect_timeout': 10,
-    'password':'password',
+    'password':'',
 })
 
 class User(BaseModel):
