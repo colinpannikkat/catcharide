@@ -8,7 +8,7 @@ def home():
 
 @app.get('/api/status')
 def status():
-    return jsonify({"status": "Server is running!"})
+    return jsonify({"status": "Server is running"})
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)
