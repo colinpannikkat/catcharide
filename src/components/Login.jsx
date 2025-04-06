@@ -7,7 +7,6 @@ async function checkUser(token) {
     // Send token to your Flask backend for verification and user check.
     const response = await fetch('https://catcharide.sarvesh.me/api/checkUser', {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
