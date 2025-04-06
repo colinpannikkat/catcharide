@@ -78,9 +78,3 @@ if __name__ == "__main__":
         ("ChIJ3VwciHg3wFQR1iwHMt0kbkY", "ChIJeeW8Vl8FlVQRhu0zaob_KX0")
     ]
     start_time = "2025-04-06T08:00:00Z"
-    project_id = "valued-decker-387606"
-    oauth2_token = "ya29.a0AZYkNZj_dJ082wovtf_qD7HtF6rJJBRrczL9ZBDG2yBJFW4_AQtu6KWJaHwoUKBVLtcpDwXs42Lr7KhYGVU97cYzpcnWyEZ-_Itw15as4P5wJv_IJSOpLeBQvvNjclznIdlyNLSFGGkSSzw-KFmdyc3TsD8btC4eDdRiO78cRD8CqAaCgYKAZsSARISFQHGX2MiigdJlJdecWjt6kda71jiBQ0181"
-
-    route_optimizer = RouteOptimization(project_id, oauth2_token)
-    result = route_optimizer.optimize_tours(vehicle_waypoint, shipment_waypoints, start_time)
-    print(result)
