@@ -14,7 +14,7 @@ const Navbar = () => {
             height="30"
             className="d-inline-block align-text-top me-2"
           />
-          Catch A Ride
+          Catch A Ride Test
         </a>
         {/* Toggler for mobile view */}
         <button
