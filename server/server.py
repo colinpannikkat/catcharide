@@ -8,6 +8,7 @@ from matching.route import RouteOptimization
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
+from database.custom_auth import authorization_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -320,6 +321,9 @@ def delete_ride_match(ride_match_id: int):
         print(e)
         return Response(status=500, response="Failed to delete ride match.")
     
+
+app.register_blueprint(authorization_bp, url_prefix='/api')
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-r", action="store_true", help="Reset the database")
