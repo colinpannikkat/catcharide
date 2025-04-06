@@ -114,6 +114,7 @@ class DatabaseDriver:
         with self.conn.cursor(row_factory=class_row(User)) as cur:
             cur.execute(sql, (user_id,))
             self.conn.commit()
+            return cur.rowcount > 0
 
     # Ride offers CRUD
     def create_ride_offer(self, origin, destination, departure_time, available_seats, description=None):
