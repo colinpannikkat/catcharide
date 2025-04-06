@@ -1,5 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 
 async function getUser(token) {
     // Send token to your Flask backend for verification and user check.
@@ -18,6 +19,7 @@ async function getUser(token) {
 }
 
 const VerificationPage = () => {
+    const navigate = useNavigate()
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -37,6 +39,7 @@ const VerificationPage = () => {
             const authToken = localStorage.getItem("authToken"); // Retrieve auth token from local storage
             if (!authToken) {
                 alert("Authentication token is missing. Please log in again.");
+                navigate('/login')
                 return;
             }
             try {
@@ -46,6 +49,8 @@ const VerificationPage = () => {
                     formData.append("last_name", res.body.last_name);
                 } else {
                     alert("User verification token invalid. Please log in again.")
+                    navigate('/login')
+                    return;
                 }
 
             } catch (error) {
