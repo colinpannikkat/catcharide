@@ -1,0 +1,4 @@
+psycopg
+flask
+python-dotenv
+requests
