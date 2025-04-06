@@ -53,7 +53,7 @@ const Login = () => {
 };
 
 const App = () => {
-  console.log("BALALSDMALKSDMASLKDJASLDKJASLKDJASLKDJASLKDJALSDJASLKDJLKASJDALKSJDLAKSJDALSKDJSAKJDKSAD");
+  console.log("TEST TO MAKE SURE UPDATEDS HERE");
   
   return (
     <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
