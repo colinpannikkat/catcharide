@@ -12,7 +12,7 @@ const Login = () => {
 
     try {
       // Send token to your Flask backend for verification and user check.
-      const response = await fetch('http://localhost:8000/api/checkUser', {
+      const response = await fetch('https://catcharide.sarvesh.me:8000/api/checkUser', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
