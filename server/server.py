@@ -13,6 +13,7 @@ from verification.verification import IDVerification
 
 app = Flask(__name__)
 CORS(app, origins=["https://catcharide.sarvesh.me/*", "https//localhost:3000/*"])
+verify = IDVerification()
 
 load_dotenv()
 PROJECT_ID = os.getenv('PROJECT_ID')
@@ -54,6 +55,8 @@ class RideMatch(BaseModel):
 class IDVerify(BaseModel):
     id: str
     image: str
+    first_name: str
+    last_name: str
 
 @app.get('/api')
 def home():
@@ -327,9 +330,13 @@ def delete_ride_match(ride_match_id: int):
         return Response(status=500, response="Failed to delete ride match.")
     
 @app.post('/api/verify')
+@validate(body=IDVerify)
 def verify_id(body: IDVerify):
-    print(body.id, body.image)
-    return 200
+    print(body)
+    if (verify.verify(**body)):
+        return Response(status=200, response="Identity verified")
+    else:
+        return Response(status=500, response="Failed to verify identity")
     
 app.register_blueprint(authorization_bp, url_prefix='/api')
 
