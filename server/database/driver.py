@@ -50,6 +50,7 @@ class DatabaseDriver:
         self.conn = psycopg.connect(**connection_params)
 
     def reset(self):
+        print("resetting tables")
         with self.conn.cursor() as cur:
             cur.execute("""
                 DROP TABLE IF EXISTS ride_matches;
@@ -62,18 +63,22 @@ class DatabaseDriver:
     def init_tables(self):
         # import schema.sql and execute it
         with self.conn.cursor() as cur:
-            with open('schema.sql', 'r') as f:
+            with open('database/schema.sql', 'r') as f:
                 cur.execute(f.read())
             self.conn.commit()
     
     # Users CRUD
     def create_user(self, first_name, last_name, email, phone_number, is_verified=False):
         sql = "INSERT INTO users (first_name, last_name, email, phone_number, is_verified) VALUES (%s, %s, %s, %s, %s) RETURNING id, first_name, last_name, email, phone_number, is_verified"
-        with self.conn.cursor(row_factory=class_row(User)) as cur:
-            cur.execute(sql, (first_name, last_name, email, phone_number, is_verified))
-            user = cur.fetchone()
-            self.conn.commit()
-        return user
+        try:
+            with self.conn.cursor(row_factory=class_row(User)) as cur:
+                cur.execute(sql, (first_name, last_name, email, phone_number, is_verified))
+                user = cur.fetchone()
+                self.conn.commit()
+            return user
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def get_user(self, user_id):
         sql = "SELECT id, first_name, last_name, email, phone_number, is_verified FROM users WHERE id = %s"
@@ -106,10 +111,10 @@ class DatabaseDriver:
             self.conn.commit()
 
     # Ride offers CRUD
-    def create_ride_offer(self, driver_id, origin, destination, departure_time, available_seats, description=None):
-        sql = "INSERT INTO ride_offers (driver_id, origin, destination, departure_time, available_seats, description) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id, driver_id, origin, destination, departure_time, available_seats, description"
+    def create_ride_offer(self, origin, destination, departure_time, available_seats, description=None):
+        sql = "INSERT INTO ride_offers (origin, destination, departure_time, available_seats, description) VALUES (%s, %s, %s, %s, %s) RETURNING id, driver_id, origin, destination, departure_time, available_seats, description"
         with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
-            cur.execute(sql, (driver_id, origin, destination, departure_time, available_seats, description))
+            cur.execute(sql, (origin, destination, departure_time, available_seats, description))
             ride_offer = cur.fetchone()
             self.conn.commit()
         return ride_offer
