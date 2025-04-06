@@ -57,6 +57,7 @@ class IDVerify(BaseModel):
     image: str
     first_name: str
     last_name: str
+    user_db_id: str
 
 @app.get('/api')
 def home():
@@ -332,8 +333,8 @@ def delete_ride_match(ride_match_id: int):
 @app.post('/api/verify')
 @validate(body=IDVerify)
 def verify_id(body: IDVerify):
-    print(body)
     if (verify.verify(**body)):
+        update_user(body.user_db_id, {"verified" : "is_verified"})
         return Response(status=200, response="Identity verified")
     else:
         return Response(status=500, response="Failed to verify identity")

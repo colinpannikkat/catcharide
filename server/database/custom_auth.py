@@ -111,14 +111,14 @@ def get_user():
         if user:
             # User exists: return user details.
             return jsonify({
-                "exists": True,
-                "user": {
-                "id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
-                "phone_number": user.phone_number,
-                "is_verified": user.is_verified
+                    "exists": True,
+                    "user": {
+                    "id": user.id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                    "phone_number": user.phone_number,
+                    "is_verified": user.is_verified
                 }
             })
         else:
