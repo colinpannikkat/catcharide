@@ -27,11 +27,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 // export default App;
 
 
-import LandingPage from './landingpage.js';
+import NavBar from './components/NavBar.jsx';
 function App() {
   return (
     <div>
-      <LandingPage />
+      <NavBar />
     </div>
   );
 }
