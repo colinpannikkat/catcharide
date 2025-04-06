@@ -49,6 +49,7 @@ class RouteOptimization:
         self.oauth_token = oauth_token
 
     def add_one_day(self, timestamp_str):
+        print(timestamp_str)
         timestamp = datetime.strptime(timestamp_str, "%Y-%m-%dT%H:%M:%SZ")
         new_timestamp = timestamp + timedelta(days=2)
         return new_timestamp.strftime("%Y-%m-%dT%H:%M:%SZ")

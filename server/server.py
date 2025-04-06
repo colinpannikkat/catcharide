@@ -23,7 +23,6 @@ db = DatabaseDriver({
     'port': 5432,
     'dbname': 'catcharide',
     'connect_timeout': 10,
-    'password':'',
 })
 
 class User(BaseModel):
@@ -163,7 +162,40 @@ def get_ride_offers_by_departure_date(departure_date: str):
     except Exception as e:
         print(e)
         return Response(status=500, response="Failed to retrieve ride offers by departure date.")
+    
+@app.get('/api/ride_offers/route/<string:origin>/<string:destination>/<string:departure_date>')
+def get_ride_offers_by_route(origin: str, destination: str, departure_date: str):
+    ride_offers = db.get_ride_offers_by_departure_date(departure_date)
+    departure_time = departure_date + "T00:00:00Z"
+    rider_waypoints_list = []
+    current_waypoint = (origin, destination)
+    for offer in ride_offers:
+        ride_requests = db.get_confirmed_ride_requests_by_ride_offer(offer.id)
+        if ride_requests is None:
+            rider_waypoints.append([current_waypoint])
+            continue
 
+        rider_waypoints = [(rider.origin, rider.destination) for rider in ride_requests]
+        rider_waypoints.append(current_waypoint)
+        rider_waypoints_list.append(rider_waypoints)
+
+    driver_waypoints = [(offer.origin, offer.destination) for offer in ride_offers]
+    print(len(driver_waypoints), len(rider_waypoints_list))
+
+    calculated_routes = [route_optimizer.optimize_tours(driver_waypoint, rider_waypoint, departure_time) for driver_waypoint, rider_waypoint in zip(driver_waypoints, rider_waypoints_list)]
+    
+    print(calculated_routes)
+
+    ride_offers_extended = []
+    for offer, calculated_route in zip(ride_offers, calculated_routes):
+        ride_offers_extended.append({
+            **offer.__dict__,
+            **calculated_route
+        })
+
+    ride_offers_extended.sort(key=lambda x: x['total_duration'])
+    return jsonify(ride_offers_extended)
+    
 @app.post('/api/ride_requests')
 @validate(body=RideRequest)
 def create_ride_request(body: RideRequest):
@@ -294,6 +326,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if (args.r):
         db.reset()
-        db.init_tables('database/schema.sql')
+        db.init_tables('server/database/schema.sql')
+        print("Database reset and initialized.")
 
     app.run(debug=True, port=8000)

@@ -274,6 +274,29 @@ class DatabaseDriver:
         except Exception as e:
             self.conn.rollback()
             raise e
+        
+    def get_confirmed_ride_requests_by_ride_offer(self, ride_offer_id):
+        # return a list of ride requests that are confirmed for a ride offer
+        sql = """
+            SELECT rr.id, rr.rider_id, rr.origin, rr.destination, rr.departure_time
+            FROM ride_matches rm
+            JOIN ride_requests rr ON rm.ride_request_id = rr.id
+            WHERE rm.ride_offer_id = %s AND rm.confirmed = TRUE
+        """
+        with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
+            cur.execute(sql, (ride_offer_id,))
+            return cur.fetchall()
+
+        # sql = """
+        #     SELECT u.id, u.first_name, u.last_name, u.email, u.phone_number, u.is_verified
+        #     FROM ride_matches rm
+        #     JOIN ride_requests rr ON rm.ride_request_id = rr.id
+        #     JOIN users u ON rr.rider_id = u.id
+        #     WHERE rm.ride_offer_id = %s AND rm.confirmed = TRUE
+        # """
+        # with self.conn.cursor(row_factory=class_row(User)) as cur:
+        #     cur.execute(sql, (ride_offer_id,))
+        #     return cur.fetchall()
 
     def delete_ride_match(self, ride_match_id):
         sql = "DELETE FROM ride_matches WHERE id = %s"
