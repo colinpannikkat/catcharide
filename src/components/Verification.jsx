@@ -26,6 +26,24 @@ const VerificationPage = () => {
         const idFile = document.querySelector("#idUpload").files[0];
         const imageFile = document.querySelector("#imageUpload").files[0];
 
+        if (idFile) {
+            const idReader = new FileReader();
+            idReader.onload = () => {
+            const idBase64 = btoa(idReader.result);
+            formData.append("id_base64", idBase64);
+            };
+            idReader.readAsDataURL(idFile);
+        }
+
+        if (imageFile) {
+            const imageReader = new FileReader();
+            imageReader.onload = () => {
+            const imageBase64 = btoa(imageReader.result);
+            formData.append("image_base64", imageBase64);
+            };
+            imageReader.readAsDataURL(imageFile);
+        }
+
         if (!idFile || !imageFile) {
             alert("Please upload both ID and Image.");
             return;
@@ -47,6 +65,7 @@ const VerificationPage = () => {
                 if (data.exists) {
                     formData.append("first_name", res.body.first_name);
                     formData.append("last_name", res.body.last_name);
+                    formData.append("user_db_id", res.body.id)
                 } else {
                     alert("User verification token invalid. Please log in again.")
                     navigate('/login')
@@ -89,6 +108,13 @@ const VerificationPage = () => {
                         id="idUpload"
                         className="form-control"
                         accept="image/*"
+                        onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file && file.size > 4 * 1024 * 1024) {
+                                alert("ID file size exceeds 4MB. Please upload a smaller file.");
+                                e.target.value = null;
+                            }
+                        }}
                     />
                 </div>
                 <div className="mb-3">
@@ -98,6 +124,13 @@ const VerificationPage = () => {
                         id="imageUpload"
                         className="form-control"
                         accept="image/*"
+                        onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (file && file.size > 4 * 1024 * 1024) {
+                                alert("Image file size exceeds 4MB. Please upload a smaller file.");
+                                e.target.value = null;
+                            }
+                        }}
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
