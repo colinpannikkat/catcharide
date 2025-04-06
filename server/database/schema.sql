@@ -10,8 +10,8 @@ CREATE TABLE users (
 CREATE TABLE ride_offers (
     id SERIAL PRIMARY KEY,
     driver_id INT REFERENCES users(id),
-    origin VARCHAR(100) NOT NULL,
-    destination VARCHAR(100) NOT NULL,
+    origin VARCHAR(200) NOT NULL,
+    destination VARCHAR(200) NOT NULL,
     departure_time TIMESTAMP NOT NULL,
     available_seats INT NOT NULL,
     description TEXT
@@ -20,8 +20,8 @@ CREATE TABLE ride_offers (
 CREATE TABLE ride_requests (
     id SERIAL PRIMARY KEY,
     rider_id INT REFERENCES users(id),
-    origin VARCHAR(100) NOT NULL,
-    destination VARCHAR(100) NOT NULL,
+    origin VARCHAR(200) NOT NULL,
+    destination VARCHAR(200) NOT NULL,
     departure_time TIMESTAMP NOT NULL
 );
 
