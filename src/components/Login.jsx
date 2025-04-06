@@ -24,8 +24,10 @@ const Login = () => {
       // Redirect based on the backend response.
       if (data.exists) {
         navigate('/homepage');
+        console.log('Data exists: navigating to homepage');
       } else {
         navigate('/register');
+        console.log('Data does notexists: navigating to register page');
       }
     } catch (error) {
       console.error('Error during user check:', error);
