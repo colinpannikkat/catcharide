@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Signup from "./components/Signup.jsx";
 import Login from "./components/Login.jsx";
 import LandingPage from "./components/LandingPage.jsx";
+import VerificationPage from "./components/Verification.jsx"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           {/* Login page route */}
           <Route path="/login" element={<Login />} />
+          <Route path="/verify" element={<VerificationPage/>}/>
         </Routes>
       </div>
     </BrowserRouter>
