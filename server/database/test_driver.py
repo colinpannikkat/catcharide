@@ -181,5 +181,26 @@ class TestDatabaseDriver(unittest.TestCase):
         self.db.delete_user(driver.id)
         self.db.delete_user(rider.id)
 
+    def test_get_user_by_email(self):
+        # Create a user
+        user = self.db.create_user(
+            first_name="Frank",
+            last_name="EmailTester",
+            email="frank.emailtester@example.com",
+            phone_number="1231231234",
+            is_verified=True
+        )
+        self.assertIsNotNone(user)
+        self.assertEqual(user.email, "frank.emailtester@example.com")
+
+        # Retrieve user by email
+        fetched = self.db.get_user_by_email("frank.emailtester@example.com")
+        self.assertIsNotNone(fetched)
+        self.assertEqual(fetched.id, user.id)
+        self.assertEqual(fetched.first_name, "Frank")
+
+        # Clean up
+        self.db.delete_user(user.id)
+
 if __name__ == "__main__":
     unittest.main()
