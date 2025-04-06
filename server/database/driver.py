@@ -60,10 +60,10 @@ class DatabaseDriver:
             """)
             self.conn.commit()
 
-    def init_tables(self):
+    def init_tables(self, schema_uri: str):
         # import schema.sql and execute it
         with self.conn.cursor() as cur:
-            with open('database/schema.sql', 'r') as f:
+            with open(schema_uri, 'r') as f:
                 cur.execute(f.read())
             self.conn.commit()
     

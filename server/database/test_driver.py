@@ -8,7 +8,7 @@ class TestDatabaseDriver(unittest.TestCase):
     def setUpClass(cls):
         cls.db = DatabaseDriver(connection_params)
         cls.db.reset()
-        cls.db.init_tables()
+        cls.db.init_tables('server/database/schema.sql')
 
     @classmethod
     def tearDownClass(cls):
@@ -54,7 +54,6 @@ class TestDatabaseDriver(unittest.TestCase):
         departure_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # Create ride offer
         ride_offer = self.db.create_ride_offer(
-            driver_id=driver.id,
             origin="CityA",
             destination="CityB",
             departure_time=departure_time,
@@ -138,7 +137,6 @@ class TestDatabaseDriver(unittest.TestCase):
         departure_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         # Create ride offer and ride request
         ride_offer = self.db.create_ride_offer(
-            driver_id=driver.id,
             origin="TownA",
             destination="TownB",
             departure_time=departure_time,

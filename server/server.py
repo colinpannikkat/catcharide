@@ -282,6 +282,6 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if (args.r):
         db.reset()
-        db.init_tables()
+        db.init_tables('database/schema.sql')
 
     app.run(debug=True, port=8000)
