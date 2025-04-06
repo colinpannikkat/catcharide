@@ -33,7 +33,7 @@ const Login = () => {
 const App = () => {
     console.log("BALALSDMALKSDMASLKDJASLDKJASLKDJASLKDJASLKDJALSDJASLKDJLKASJDALKSJDLAKSJDALSKDJSAKJDKSAD"); 
   return (
-    <GoogleOAuthProvider clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}>
+    <GoogleOAuthProvider clientId={process.env.CLIENT_ID}>
       <Login />
     </GoogleOAuthProvider>
   );
