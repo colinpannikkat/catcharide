@@ -9,12 +9,12 @@ from driver import DatabaseDriver, connection_params, User
 # Create an instance of DatabaseDriver using your connection parameters.
 db = DatabaseDriver(connection_params)
 
-auth_bp = Blueprint('auth', __name__)
+authorization_bp = Blueprint('auth', __name__)
 
 # Import the CLIENT_ID from environment variables.
 CLIENT_ID = os.getenv('REACT_APP_GOOGLE_CLIENT_ID')
 
-@auth_bp.route('/checkUser', methods=['POST'])
+@authorization_bp.route('/checkUser', methods=['POST'])
 def check_user():
     # Step 1: Get the token from the request payload.
     data = request.get_json()
