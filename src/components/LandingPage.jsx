@@ -42,11 +42,6 @@ const LandingPage = () => {
           </div>
           {/* Right Column: Image */}
           <div className="col-md-6 d-none d-md-block">
-            {/* <img
-              src="https://raw.githubusercontent.com/sidiDev/remote-assets/c86a7ae02ac188442548f510b5393c04140515d7/undraw_progressive_app_m-9-ms_oftfv5.svg"
-              alt="Landing Illustration"
-              className="img-fluid"
-            /> */}
             <img
             src="/landingpage.png"  
             className="img-fluid"
