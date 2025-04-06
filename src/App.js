@@ -1,7 +1,6 @@
-import logo from './logo.svg';
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.css";
 
 // function App() {
 //   return (
@@ -26,21 +25,20 @@ import 'bootstrap/dist/css/bootstrap.css';
 
 // export default App;
 
-
-import NavBar from './components/NavBar.jsx';
+import NavBar from "./components/NavBar.jsx";
+// import landingpageimg from "./public/landingpage.png";
 function App() {
   return (
-    <div>
-      <NavBar />
-    </div>
+    <>
+      <div>
+        <NavBar />
+      </div>
+      {/* <img src={landingpageimg} alt="landingpageimg" />; */}
+    </>
   );
 }
 
 export default App;
-
-
-
-
 
 // import React from 'react';
 // import {APIProvider, Map} from '@vis.gl/react-google-maps';
