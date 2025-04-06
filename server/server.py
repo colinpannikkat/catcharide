@@ -13,13 +13,17 @@ app = Flask(__name__)
 CORS(app)
 
 load_dotenv()
-route_optimizer = RouteOptimization(os.getenv['PROJECT_ID'], os.getenv['OAUTH_TOKEN'])
+PROJECT_ID = os.getenv('PROJECT_ID')
+OAUTH_TOKEN = os.getenv('OAUTH_TOKEN')
+
+route_optimizer = RouteOptimization(PROJECT_ID, OAUTH_TOKEN)
 
 db = DatabaseDriver({
     'host': 'localhost',
     'port': 5432,
     'dbname': 'catcharide',
     'connect_timeout': 10,
+    'password':'',
 })
 
 class User(BaseModel):
