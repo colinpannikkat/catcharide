@@ -75,3 +75,44 @@ def check_user():
     except Exception as e:
         print("Error verifying token:", e)
         return jsonify({"error": "Invalid token"}), 401
+    
+@authorization_bp.route('/getUser', methods=['GET'])
+def get_user():
+    # Step 1: Get the token from the request headers.
+    token = request.headers.get("Authorization")
+    
+    if not token:
+        return jsonify({"error": "Missing token"}), 400
+
+    try:
+        # Step 2: Verify the token with Google's OAuth utility.
+        request_adapter = google.auth.transport.requests.Request()
+        id_info = google.oauth2.id_token.verify_oauth2_token(token, request_adapter, CLIENT_ID)
+        
+        # Step 3: Extract email from the token.
+        email = id_info.get("email")
+        
+        if not email:
+            return jsonify({"error": "Email not found in token"}), 400
+
+        # Step 4: Query the database for the user by email.
+        user = db.get_user_by_email(email)
+        if user:
+            # User exists: return user details.
+            return jsonify({
+                "exists": True,
+                "user": {
+                "id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+                "phone_number": user.phone_number,
+                "is_verified": user.is_verified
+                }
+            })
+        else:
+            # User does not exist.
+            return jsonify({"exists": False})
+    except Exception as e:
+        print("Error verifying token or fetching user:", e)
+        return jsonify({"error": "Internal server error"}), 500
