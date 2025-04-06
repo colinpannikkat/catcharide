@@ -1,4 +1,4 @@
-ride_offers = [
+ride_offers1 = [
     {
         "id": 1,
         "driver_id": 101,
@@ -91,7 +91,7 @@ ride_offers = [
     }
 ]
 
-ride_requests = [
+ride_requests1 = [
     {
         "id": 1,
         "rider_id": 201,
@@ -112,5 +112,77 @@ ride_requests = [
         "origin": "ChIJ7cv00DwsDogRAMDACa2m4K8", # Chicago
         "destination": "ChIJdR3LEAHKJIgR0sS5NU6Gdlc", # Detroit
         "departure_time": "2025-04-19T14:15:00"
+    }
+]
+
+ride_offers2 = [
+    {
+        "id": 1,
+        "driver_id": 301,
+        "origin": "ChIJJ3SpfQsLlVQRkYXR9ua5Nhw",  # Portland, OR
+        "destination": "ChIJGRlQrLAZwVQRTYlDSolh7Fc",  # Eugene, OR
+        "departure_time": "2025-04-19T08:00:00",
+        "available_seats": 3,
+        "description": "Morning ride down I-5 to Eugene, coffee stops welcome."
+    },
+    {
+        "id": 2,
+        "driver_id": 302,
+        "origin": "ChIJUdLTpf_AuFQRtNEgx6zniBA",  # Bend, OR
+        "destination": "ChIJJ3SpfQsLlVQRkYXR9ua5Nhw",  # Portland, OR
+        "departure_time": "2025-04-19T09:15:00",
+        "available_seats": 2,
+        "description": "Cruising back to PDX, pet-friendly ride."
+    },
+    {
+        "id": 3,
+        "driver_id": 303,
+        "origin": "ChIJGRlQrLAZwVQRTYlDSolh7Fc",  # Eugene, OR
+        "destination": "ChIJY5xLvPz-v1QRwlcDj-ApNPk",  # Salem, OR
+        "departure_time": "2025-04-19T10:00:00",
+        "available_seats": 4,
+        "description": "Quick trip to the capital, AC and good music."
+    },
+    {
+        "id": 4,
+        "driver_id": 304,
+        "origin": "ChIJY5xLvPz-v1QRwlcDj-ApNPk",  # Salem, OR
+        "destination": "ChIJfdcUqp1AwFQRvsC9Io-ADdc",  # Corvallis, OR
+        "departure_time": "2025-04-19T11:45:00",
+        "available_seats": 3,
+        "description": "Afternoon chill ride to Corvallis."
+    },
+    {
+        "id": 5,
+        "driver_id": 305,
+        "origin": "ChIJu1GMTtTUuFQRGHlrwGDSOJQ",  # Redmond, OR
+        "destination": "ChIJUdLTpf_AuFQRtNEgx6zniBA",  # Bend, OR
+        "departure_time": "2025-04-19T07:30:00",
+        "available_seats": 2,
+        "description": "Short morning hop to Bend. On time guaranteed!"
+    }
+]
+
+ride_requests2 = [
+    {
+        "id": 1,
+        "rider_id": 401,
+        "origin": "ChIJGRlQrLAZwVQRTYlDSolh7Fc",  # Eugene, OR
+        "destination": "ChIJJ3SpfQsLlVQRkYXR9ua5Nhw",  # Portland, OR
+        "departure_time": "2025-04-19T14:00:00"
+    },
+    {
+        "id": 2,
+        "rider_id": 402,
+        "origin": "ChIJY5xLvPz-v1QRwlcDj-ApNPk",  # Salem, OR
+        "destination": "ChIJUdLTpf_AuFQRtNEgx6zniBA",  # Bend, OR
+        "departure_time": "2025-04-19T13:30:00"
+    },
+    {
+        "id": 3,
+        "rider_id": 403,
+        "origin": "ChIJJ3SpfQsLlVQRkYXR9ua5Nhw",  # Portland, OR
+        "destination": "ChIJfdcUqp1AwFQRvsC9Io-ADdc",  # Corvallis, OR
+        "departure_time": "2025-04-19T12:15:00"
     }
 ]
