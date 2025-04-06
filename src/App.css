@@ -1,4 +1,4 @@
-.App {
+/* .App {
   text-align: center;
 }
 
@@ -35,4 +35,18 @@
   to {
     transform: rotate(360deg);
   }
+} */
+
+/* .container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
 }
+
+Media query for phone screens (max-width: 600px) */
+/* @media (max-width: 600px) {
+  .container {
+    max-width: 100%;
+    padding: 10px;
+  }
+} */
