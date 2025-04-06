@@ -164,7 +164,6 @@ class Matcher:
             "origins": locs,
             "destinations": locs,
             "travelMode": "DRIVE",
-            "routingPreference": "TRAFFIC_AWARE"
         }
         
         response = requests.post(url, headers=headers, json=body)
