@@ -57,7 +57,7 @@ def test_sort_listings(matcher):
     rider = RiderNode({'origin': 'place_id:ChIJv0fYEV4XwFQRAKdgafDZ1R8', 'destination': 'place_id:ChIJ-RRZyGOvlVQR8-ORLBHVVoQ'})
     driver1 = DriverNode({'origin': 'place_id:ChIJfdcUqp1AwFQRvsC9Io-ADdc', 'destination': 'place_id:ChIJJ3SpfQsLlVQRkYXR9ua5Nhw'})
     driver2 = DriverNode({'origin': 'place_id:ChIJ-RRZyGOvlVQR8-ORLBHVVoQ', 'destination': 'place_id:ChIJJ3SpfQsLlVQRkYXR9ua5Nhw'})
-    matcher._revgraph[rider] = {(driver1, 10), (driver2, 5)}
+    matcher._revgraph[rider] = {(driver1, (10, 9)), (driver2, (5, 3))}
     top_listings = matcher.sort_listings(rider, 1)
     assert len(top_listings) == 1
     assert top_listings[0][0] == driver2
