@@ -18,6 +18,11 @@ const Login = () => {
         body: JSON.stringify({ token }),
       });
       
+      console.log('Token:', token);
+      console.log('Response json: ', response.json);
+      console.log('Response body: ', response.body);
+
+
       const data = await response.json();
       console.log('Backend response:', data);
       
