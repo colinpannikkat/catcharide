@@ -1,21 +1,21 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-
-
         {/* #TODO insert logo */}
-        <a className="navbar-brand" href="#home">
+        <Link className="navbar-brand" to="/">
           <img
             src="/logo192.png"  // change this later after AJ makes logo
             width="30"
             height="30"
             className="d-inline-block align-text-top me-2"
+            alt="Logo"
           />
           Catch A Ride
-        </a>
+        </Link>
         {/* Toggler for mobile view */}
         <button
           className="navbar-toggler"
@@ -28,36 +28,24 @@ const Navbar = () => {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
-
         {/* Navigation Links */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto">
-
-            {/* <li className="nav-item">
-              <a className="nav-link active" aria-current="page" href="#home">
-                Home
-              </a>
-            </li> */}
-
             <li className="nav-item">
-              <a className="nav-link" href="#about">
+              <Link className="nav-link" to="/about">
                 About
-              </a>
+              </Link>
             </li>
-
             <li className="nav-item">
-              <a className="nav-link" href="#signup">
-                Sign Up
-              </a>
+              <Link className="nav-link" to="/login">
+                Log In
+              </Link>
             </li>
-
             <li className="nav-item">
-              <a className="nav-link" href="#login">
-                Login
-              </a>
+              <Link className="nav-link" to="/signup">
+                <button type="button" className="btn btn-primary btn-sm">Sign Up</button>
+              </Link>
             </li>
-            
           </ul>
         </div>
       </div>

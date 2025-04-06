@@ -1,40 +1,35 @@
-import logo from "./logo.svg";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React testing
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
-
+import Signup from './components/Signup.jsx';
+import Login from './components/Login.jsx';
 import NavBar from "./components/NavBar.jsx";
-// import landingpageimg from "./public/landingpage.png";
 function App() {
   return (
-    <>
-      <div>
+    <BrowserRouter>
+      <div className="container">
         <NavBar />
+        <Routes>
+          {/* Landing page route */}
+          <Route 
+            path="/" 
+            element={
+              <img 
+                src="/landingpage.png"
+                alt="landingpageimg"
+                width="500"
+                height="700" 
+              />
+            } 
+          />
+          {/* Signup page route */}
+          <Route path="/signup" element={<Signup />} />
+          {/* Login page route */}
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </div>
-      {/* <img src={landingpageimg} alt="landingpageimg" />; */}
-    </>
+    </BrowserRouter>
   );
 }
 
