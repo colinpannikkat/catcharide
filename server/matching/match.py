@@ -293,7 +293,7 @@ class Matcher:
                   sorted by their weights in ascending order. Each listing is 
                   represented as a tuple (listing, weight).
         """
-        top = nsmallest(n, self._revgraph[node], key=lambda x: x[1])
+        top = nsmallest(n, self._revgraph[node], key=lambda x: x[1][0])
         return top
     
 if __name__ == "__main__":
