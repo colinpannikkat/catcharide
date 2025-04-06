@@ -100,9 +100,14 @@ class DatabaseDriver:
             values.append(value)
         values.append(user_id)
         sql = f"UPDATE users SET {', '.join(fields)} WHERE id = %s"
-        with self.conn.cursor(row_factory=class_row(User)) as cur:
-            cur.execute(sql, tuple(values))
-            self.conn.commit()
+        try:
+            with self.conn.cursor(row_factory=class_row(User)) as cur:
+                cur.execute(sql, tuple(values))
+                self.conn.commit()
+                return cur.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def delete_user(self, user_id):
         sql = "DELETE FROM users WHERE id = %s"
@@ -113,11 +118,15 @@ class DatabaseDriver:
     # Ride offers CRUD
     def create_ride_offer(self, origin, destination, departure_time, available_seats, description=None):
         sql = "INSERT INTO ride_offers (origin, destination, departure_time, available_seats, description) VALUES (%s, %s, %s, %s, %s) RETURNING id, driver_id, origin, destination, departure_time, available_seats, description"
-        with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
-            cur.execute(sql, (origin, destination, departure_time, available_seats, description))
-            ride_offer = cur.fetchone()
-            self.conn.commit()
-        return ride_offer
+        try:
+            with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
+                cur.execute(sql, (origin, destination, departure_time, available_seats, description))
+                ride_offer = cur.fetchone()
+                self.conn.commit()
+            return ride_offer
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def get_ride_offer(self, ride_offer_id):
         sql = "SELECT id, driver_id, origin, destination, departure_time, available_seats, description FROM ride_offers WHERE id = %s"
@@ -145,24 +154,34 @@ class DatabaseDriver:
             values.append(value)
         values.append(ride_offer_id)
         sql = f"UPDATE ride_offers SET {', '.join(fields)} WHERE id = %s"
-        with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
-            cur.execute(sql, tuple(values))
-            self.conn.commit()
+        try:
+            with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
+                cur.execute(sql, tuple(values))
+                self.conn.commit()
+                return cur.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def delete_ride_offer(self, ride_offer_id):
         sql = "DELETE FROM ride_offers WHERE id = %s"
         with self.conn.cursor(row_factory=class_row(RideOffer)) as cur:
             cur.execute(sql, (ride_offer_id,))
             self.conn.commit()
+            return cur.rowcount > 0
 
     # Ride requests CRUD
     def create_ride_request(self, rider_id, origin, destination, departure_time):
         sql = "INSERT INTO ride_requests (rider_id, origin, destination, departure_time) VALUES (%s, %s, %s, %s) RETURNING id, rider_id, origin, destination, departure_time"
-        with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
-            cur.execute(sql, (rider_id, origin, destination, departure_time))
-            ride_request = cur.fetchone()
-            self.conn.commit()
-        return ride_request
+        try:
+            with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
+                cur.execute(sql, (rider_id, origin, destination, departure_time))
+                ride_request = cur.fetchone()
+                self.conn.commit()
+            return ride_request
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def get_ride_request(self, ride_request_id):
         sql = "SELECT id, rider_id, origin, destination, departure_time FROM ride_requests WHERE id = %s"
@@ -190,24 +209,34 @@ class DatabaseDriver:
             values.append(value)
         values.append(ride_request_id)
         sql = f"UPDATE ride_requests SET {', '.join(fields)} WHERE id = %s"
-        with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
-            cur.execute(sql, tuple(values))
-            self.conn.commit()
+        try:
+            with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
+                cur.execute(sql, tuple(values))
+                self.conn.commit()
+                return cur.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def delete_ride_request(self, ride_request_id):
         sql = "DELETE FROM ride_requests WHERE id = %s"
         with self.conn.cursor(row_factory=class_row(RideRequest)) as cur:
             cur.execute(sql, (ride_request_id,))
             self.conn.commit()
+            return cur.rowcount > 0
 
     # Ride matches CRUD
     def create_ride_match(self, ride_offer_id, ride_request_id, pending=True, confirmed=False):
         sql = "INSERT INTO ride_matches (ride_offer_id, ride_request_id, pending, confirmed) VALUES (%s, %s, %s, %s) RETURNING id, ride_offer_id, ride_request_id, pending, confirmed"
-        with self.conn.cursor(row_factory=class_row(RideMatch)) as cur:
-            cur.execute(sql, (ride_offer_id, ride_request_id, pending, confirmed))
-            ride_match = cur.fetchone()
-            self.conn.commit()
-        return ride_match
+        try:
+            with self.conn.cursor(row_factory=class_row(RideMatch)) as cur:
+                cur.execute(sql, (ride_offer_id, ride_request_id, pending, confirmed))
+                ride_match = cur.fetchone()
+                self.conn.commit()
+            return ride_match
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def get_ride_match(self, ride_match_id):
         sql = "SELECT id, ride_offer_id, ride_request_id, pending, confirmed FROM ride_matches WHERE id = %s"
@@ -235,15 +264,21 @@ class DatabaseDriver:
             values.append(value)
         values.append(ride_match_id)
         sql = f"UPDATE ride_matches SET {', '.join(fields)} WHERE id = %s"
-        with self.conn.cursor(row_factory=class_row(RideMatch)) as cur:
-            cur.execute(sql, tuple(values))
-            self.conn.commit()
+        try:
+            with self.conn.cursor(row_factory=class_row(RideMatch)) as cur:
+                cur.execute(sql, tuple(values))
+                self.conn.commit()
+                return cur.rowcount > 0
+        except Exception as e:
+            self.conn.rollback()
+            raise e
 
     def delete_ride_match(self, ride_match_id):
         sql = "DELETE FROM ride_matches WHERE id = %s"
         with self.conn.cursor(row_factory=class_row(RideMatch)) as cur:
             cur.execute(sql, (ride_match_id,))
             self.conn.commit()
+            return cur.rowcount > 0
 
     def close(self):
         self.conn.close()
